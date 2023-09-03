@@ -39,4 +39,4 @@ def delete_todo(request, id):
     my_todo.delete()
     return redirect('/todo')
 
-def
+
