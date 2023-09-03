@@ -1,3 +1,51 @@
-from django.shortcuts import render
+from django.contrib.auth import get_user_model
+from django.shortcuts import render, redirect
+from django.contrib import auth
+from django.contrib.auth.decorators import login_required
+from .models import UserModel
+from django.views.decorators.csrf import csrf_exempt
 
 # Create your views here.
+@csrf_exempt
+def sign_up_view(request):
+    if request.method == 'GET':
+        user = request.user.is_authenticated
+        if user:
+            return redirect('/')
+        else:
+            return render(request, 'user/signup.html')
+    elif request.method == 'POST':
+        username = request.POST.get('username','')
+        password = request.POST.get('password','')
+        password2 = request.POST.get('password2', '')
+        email = request.POST.get('email','')
+        if (password != password2):
+            return render(request,'user/signup.html', {'error' : '입력하신 비밀번호가 서로 다릅니다!'})
+        else:
+            ex_user = get_user_model().objects.filter(username=username)
+            if ex_user:
+                return render(request, 'user/signup.html', {'error': '존재하는 아이디 입니다!'})
+            else:
+                UserModel.objects.create_user(username=username, password=password, email=email)
+
+            return redirect('/todo')
+
+def sign_in_view(request):
+    if request.method == 'GET':
+        user = request.user.is_authenticated
+        if user:
+            return redirect('/todo')
+        else:
+            return render(request, 'user/signin.html')
+    else:
+        username = request.POST.get('username','')
+        password = request.POST.get('password','')
+        if username == '' or password == '':
+            return render(request, 'user/signin.html',{'error' : '아이디와 비밀번호는 필수 입력칸입니다!'})
+        else:
+            me = auth.authenticate(request, username=username,password=password)
+            if me is not None:
+                auth.login(request, me)
+                return render(request, 'todo/todo.html')
+            else:
+                return render(request,'user/signin.html')

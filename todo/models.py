@@ -7,5 +7,6 @@ class todoModel(models.Model):
         db_table = "todo"
     author = models.ForeignKey(UserModel, on_delete=models.CASCADE)
     content = models.CharField(max_length=256)
+    title = models.CharField(max_length=256, default='')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
