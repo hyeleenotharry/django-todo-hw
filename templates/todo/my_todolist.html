@@ -5,7 +5,8 @@
         <div class="form-row">
             {% for todo in my_todolist %}
                 <div class="card_write" style="top: 50px">
-                    <div class="button-container" style="width: 40px; height: 30px; float: right; display: flex; justify-content: flex-end; margin-top: 10px; flex-direction: column; margin-top: 45px">
+                    <div class="button-container"
+                         style="width: 40px; height: 30px; float: right; display: flex; justify-content: flex-end; margin-top: 10px; flex-direction: column; margin-top: 45px">
                         {% if todo.author == user %}
                             <div style="width: 40px; height: 30px; float: right; display: flex; justify-content: flex-end;">
                                 <a href="/todo/delete/{{ todo.id }}">
@@ -19,7 +20,28 @@
                             </a>
                         </div>
                     </div>
-                    <div class="card_load"></div>
+                    {% if todo.author == user %}
+                        <form action="check/{{ todo.id }}" method="post">
+                            {% csrf_token %}
+                            {% if todo.is_completed == False %}
+                                <div class="checkbox-wrapper"
+                                     style="width: 20px; height: 50px; float: left; display: flex; justify-content: flex-end; flex-direction: column;">
+                                    <input id="{{ todo.content }}" name="todo-check" type="checkbox" value="{{ todo.id }}" onchange="this.form.submit()">
+                                    <label for="{{ todo.content }}">
+                                        <div class="tick_mark"></div>
+                                    </label>
+                                </div>
+                            {% else %}
+                                <div class="checkbox-wrapper"
+                                     style="width: 20px; height: 50px; float: left; display: flex; justify-content: flex-end; flex-direction: column;">
+                                    <input id="{{ todo.content }}" name="todo-check" type="checkbox" value="{{ todo.id }}" onchange="this.form.submit()" checked>
+                                    <label for="{{ todo.content }}">
+                                        <div class="tick_mark"></div>
+                                    </label>
+                                </div>
+                            {% endif %}
+                        </form>
+                    {% endif %}
                     <div class="card_load_extreme_title">{{ todo.title }}</div>
                     <div class="card_load_extreme_descripion">{{ todo.content }}</div>
                     <div style="text-align: right">
