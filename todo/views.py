@@ -62,8 +62,31 @@ def write_comment(request, id):
         my_comment.save()
         return redirect(re_add)
 
+@login_required
 def delete_comment(request, id):
     my_comment = todoComment.objects.get(id=id)
     re_add = reverse('view-comment',args=(my_comment.todo_id,))
     my_comment.delete()
     return redirect(re_add)
+
+@login_required
+def my_todolist(request):
+    user = request.user
+    my_todolist = todoModel.objects.all().filter(author=user)
+    return render(request, 'todo/my_todolist.html', {'my_todolist': my_todolist})
+
+@login_required
+def update_todo(request, id):
+    exist_todo = todoModel.objects.get(id=id)
+    if request.method == 'GET':
+        return render(request, 'todo/update_todo.html', {'exist_todo': exist_todo})
+    if request.method == 'POST':
+        title = request.POST['new_title']
+        content = request.POST['new_content']
+        if title == '' or content == '':
+            return render(request,'todo/update_todo.html', {'error' : '제목과 내용은 필수 요소입니다.'})
+        else:
+            exist_todo.title = title
+            exist_todo.content = content
+            exist_todo.save()
+            return redirect('/todo/mytodo')

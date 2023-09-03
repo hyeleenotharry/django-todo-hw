@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container timeline-container">
+        <div class="form-row">
+            <div class="card"
+                 style="margin-bottom: 30px; width: 600px; left: 27%; box-shadow: 0 1px 25px rgba(0, 0, 0, 0.2);">
+                <div class="card-body">
+                    <div class="media">
+                        <div class="media-body">
+                            <h5 class="mt-0">오늘 할 일을 수정해주세요</h5>
+                            <p>
+                            <form method="post" action="/todo/mytodo/update/{{ exist_todo.id }}">
+                                {% csrf_token %}
+                                {% if error %}
+                                    <div class="alert alert-danger" role="alert">
+                                        {{ error }}
+                                    </div>
+                                {% endif %}
+                                <div class="form-group mb-2">
+                                    <textarea class="form-control" style="height: 20px" name='new_title' id="new_title">{{ exist_todo.title }}</textarea>
+                                </div>
+                                <div class="form-group mb-2">
+                                    <textarea class="form-control" style="resize: none" name='new_content' id="new_content">{{ exist_todo.content }}</textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary" style="float:right;">작성하기
+                                </button>
+                            </form>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
