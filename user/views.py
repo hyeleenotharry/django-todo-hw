@@ -45,12 +45,15 @@ def sign_in_view(request):
         else:
             me = auth.authenticate(request, username=username,password=password)
             if me is not None:
+                print('login well')
                 auth.login(request, me)
-                return render(request, 'todo/todo.html')
+                return redirect('/todo')
             else:
-                return render(request,'user/signin.html')
+                return redirect('/signin')
 
 @login_required
 def logout(request):
     auth.logout(request)
     return redirect('/')
+
+

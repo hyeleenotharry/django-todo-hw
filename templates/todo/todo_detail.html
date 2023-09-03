@@ -7,4 +7,63 @@
 <body>
 
 </body>
-</html>
+</html>{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container timeline-container">
+        <div class="card_write" style="top: 50px">
+            <div class="button-container"
+                 style="width: 40px; height: 30px; float: right; display: flex; justify-content: flex-end; margin-top: 10px; flex-direction: column; margin-top: 45px"></div>
+            <div class="card_load"></div>
+            <div class="card_load_extreme_title">{{ my_todo.title }}</div>
+            <div class="card_load_extreme_descripion">{{ my_todo.content }}</div>
+            <div style="text-align: right">
+                <span style="font-size: small">{{ my_todo.author.username }}-{{ my_todo.created_at|timesince }} 전</span>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="card"
+                 style="margin-bottom: 30px; width: 600px; left: 27%; box-shadow: 0 1px 25px rgba(0, 0, 0, 0.2);">
+                <div class="card-body">
+                    <div class="media">
+                        <div class="media-body">
+                            <h5 class="mt-0">댓글 달기</h5>
+                            <p>
+                            <form method="post" action="/todo/comment/{{ my_todo.id }}">
+                                {% csrf_token %}
+                                <div class="form-group mb-2">
+                                    <textarea class="form-control" style="resize: none" name='comment' id="comment"
+                                              placeholder="댓글을 달아주세요"></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary" style="float:right;">작성하기
+                                </button>
+                            </form>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% for cm in all_comment %}
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="media">
+                            <div class="media-body">
+                                <h5 class="mt-0"> {{ cm.comment }} </h5>
+                                <span> {{ cm.author.username }} </span>
+                                <span> - {{ cm.created_at | timesince }} 전</span>
+                            </div>
+                            {% if cm.author == user %}
+                                <div style="float: right">
+                                    <a href="/todo/comment/delete/{{ cm.id }}">
+                                        <de_button>삭제</de_button>
+                                    </a>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <hr>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

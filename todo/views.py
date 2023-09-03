@@ -1,6 +1,6 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, reverse
 from django.contrib.auth.decorators import login_required
-from .models import todoModel
+from .models import todoModel, todoComment
 
 
 # Create your views here.
@@ -39,4 +39,31 @@ def delete_todo(request, id):
     my_todo.delete()
     return redirect('/todo')
 
+@login_required
+def view_comment(request, id):
+    my_todo = todoModel.objects.get(id=id)
+    all_comment = todoComment.objects.all().filter(todo_id=id)
+    return render(request,'todo/todo_detail.html',{'my_todo' : my_todo, 'all_comment' : all_comment})
 
+@login_required
+def write_comment(request, id):
+    re_add = reverse('view-comment', args=(id,))
+
+    user = request.user
+    my_comment = todoComment()
+    my_comment.comment = request.POST.get('comment','')
+    my_comment.author = user
+    my_comment.todo_id = id
+    if my_comment.comment == '':
+        print('not blank')
+        return redirect(re_add)
+    else:
+        print('comment well written')
+        my_comment.save()
+        return redirect(re_add)
+
+def delete_comment(request, id):
+    my_comment = todoComment.objects.get(id=id)
+    re_add = reverse('view-comment',args=(my_comment.todo_id,))
+    my_comment.delete()
+    return redirect(re_add)
