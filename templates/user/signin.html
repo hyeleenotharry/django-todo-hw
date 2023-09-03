@@ -1,10 +1,36 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'base.html' %}
+{#base.html 이라는 파일 위에 추가해 주겠다 - 네비게이션(nav) 에 추가#}
 
-</body>
-</html>
+{% block title %}
+    로그인
+{% endblock %}
+{# {% %} : html에 파이썬 문법을 적용시킬 수 있도록 도와주는 문법#}
+{% block content %}
+    <div class="container">
+        <div class="wrap">
+            <h2 class="title-center"> 로그인</h2>
+            <form class="form-area" method="post" action="/signin/"> {# sign-in 뒤 /를 꼭 붙여주어야 함, action과 method순서는 상관없음 #}
+                {% csrf_token %}
+                <div class="form-group mt-2 mb-2">
+                    <label for="username">이름</label>
+                    <input type="text" class="form-control" id="username" name="username">
+                </div>
+                <div class="form-group mt-2 mb-2">
+                    <label for="password">비밀번호</label>
+                    <input type="password" class="form-control" id="password" name="password">
+                </div>
+                {% if error %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ error }}
+                    </div>
+                {% endif %}
+                <hr>
+                <div style="float: right">
+                    <button type="submit" class="btn btn-primary">로그인</button>
+                    <a href="/signup" class="btn btn-secondary">회원가입 페이지로</a>
+                </div>
+            </form>
+
+        </div>
+    </div>
+{% endblock %}

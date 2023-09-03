@@ -3,10 +3,10 @@ from django.shortcuts import render, redirect
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required
 from .models import UserModel
-from django.views.decorators.csrf import csrf_exempt
+
 
 # Create your views here.
-@csrf_exempt
+
 def sign_up_view(request):
     if request.method == 'GET':
         user = request.user.is_authenticated
@@ -49,3 +49,8 @@ def sign_in_view(request):
                 return render(request, 'todo/todo.html')
             else:
                 return render(request,'user/signin.html')
+
+@login_required
+def logout(request):
+    auth.logout(request)
+    return redirect('/')
