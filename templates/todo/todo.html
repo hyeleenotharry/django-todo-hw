@@ -2,59 +2,82 @@
 
 {% block content %}
     <div class="container timeline-container">
-        <div class="form-row">
-            <div class="card"
-                 style="margin-bottom: 30px; width: 600px; left: 27%; box-shadow: 0 1px 25px rgba(0, 0, 0, 0.2);">
-                <div class="card-body">
-                    <div class="media">
-                        <div class="media-body">
-                            <h5 class="mt-0">오늘 할 일을 적어주세요</h5>
-                            <p>
-                            <form method="post" action="/todo/">
-                                {% csrf_token %}
-                                {% if error %}
-                                    <div class="alert alert-danger" role="alert">
-                                        {{ error }}
-                                    </div>
-                                {% endif %}
-                                <div class="form-group mb-2">
-                                    <textarea class="form-control" style="height: 20px" name='title' id="title" placeholder="제목"></textarea>
-                                </div>
-                                <div class="form-group mb-2">
-                                    <textarea class="form-control" style="resize: none" name='content' id="content" placeholder="일정"></textarea>
-                                </div>
-                                <button type="submit" class="btn btn-primary" style="float:right;">작성하기
-                                </button>
-                            </form>
-                            </p>
-                        </div>
+        <div class="row" style="width: ;display: block; float: left">
+            <div class="col-md-3" style="width: 300px; margin: 0; padding: 0">
+                <div class="card" style="width: 290px">
+                    {% if user.profile %}
+                        <img class="card_load" style="width: 60px; height: 60px; position: absolute; left: 200px; top: 15px" src="{{ user.profile.url }}">
+                    {% else %}
+                        <div class="card_load" style="width: 60px; height: 60px; position: absolute; left: 220px; top: 15px"></div>
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ user.username }}</h5>
+                        <p class="card-text">{{ user.email }}</p>
+
                     </div>
                 </div>
             </div>
-            {% for todo in all_todo %}
-                <div class="card_write" style="top: 50px">
-                    <div class="button-container" style="width: 40px; height: 30px; float: right; display: flex; justify-content: flex-end; margin-top: 10px; flex-direction: column; margin-top: 45px">
-                        {% if todo.author == user %}
-                            <div style="width: 40px; height: 30px; float: right; display: flex; justify-content: flex-end;">
-                                <a href="/todo/delete/{{ todo.id }}">
-                                    <de_button style="--color: crimson">삭제</de_button>
-                                </a>
+            <div style="margin-left: 50%; margin-top: 0px">
+                <div class="card"
+                     style="margin-bottom: 30px; width: 600px; left: 0%; box-shadow: 0 1px 25px rgba(0, 0, 0, 0.2);">
+                    <div class="card-body">
+                        <div class="media">
+                            <div class="media-body">
+                                <h5 class="mt-0">오늘 할 일을 적어주세요</h5>
+                                <p>
+                                <form method="post" action="/todo/">
+                                    {% csrf_token %}
+                                    {% if error %}
+                                        <div class="alert alert-danger" role="alert">
+                                            {{ error }}
+                                        </div>
+                                    {% endif %}
+                                    <div class="form-group mb-2">
+                                        <textarea class="form-control" style="height: 20px" name='title' id="title"
+                                                  placeholder="제목"></textarea>
+                                    </div>
+                                    <div class="form-group mb-2">
+                                        <textarea class="form-control" style="resize: none" name='content' id="content"
+                                                  placeholder="일정"></textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary" style="float:right;">작성하기
+                                    </button>
+                                </form>
+                                </p>
                             </div>
-                        {% endif %}
-                        <div style="width: 40px; height: 30px; float: right; display: flex; justify-content: flex-end; margin-top: 5px">
-                            <a href="/todo/{{ todo.id }}">
-                                <de_button style="--color: green">보기</de_button>
-                            </a>
                         </div>
                     </div>
-                    <div class="card_load"></div>
-                    <div class="card_load_extreme_title">{{ todo.title }}</div>
-                    <div class="card_load_extreme_descripion">{{ todo.content }}</div>
-                    <div style="text-align: right">
-                        <span style="font-size: small">{{ todo.author.username }}-{{ todo.created_at|timesince }} 전</span>
-                    </div>
                 </div>
-            {% endfor %}
+                {% for todo in all_todo %}
+                    <div class="card_write" style="top: 50px">
+                        <div class="button-container"
+                             style="width: 40px; height: 30px; float: right; display: flex; justify-content: flex-end; margin-top: 10px; flex-direction: column; margin-top: 45px">
+                            {% if todo.author == user %}
+                                <div style="width: 40px; height: 30px; float: right; display: flex; justify-content: flex-end;">
+                                    <a href="/todo/delete/{{ todo.id }}">
+                                        <de_button style="--color: crimson">삭제</de_button>
+                                    </a>
+                                </div>
+                            {% endif %}
+                            <div style="width: 40px; height: 30px; float: right; display: flex; justify-content: flex-end; margin-top: 5px">
+                                <a href="/todo/{{ todo.id }}">
+                                    <de_button style="--color: green">보기</de_button>
+                                </a>
+                            </div>
+                        </div>
+                        {% if todo.author.profile %}
+                            <img class="card_load" src="{{ todo.author.profile.url }}">
+                        {% else %}
+                            <div class="card_load"></div>
+                        {% endif %}
+                        <div class="card_load_extreme_title">{{ todo.title }}</div>
+                        <div class="card_load_extreme_descripion">{{ todo.content }}</div>
+                        <div style="text-align: right">
+                            <span style="font-size: small">{{ todo.author.username }}-{{ todo.created_at|timesince }} 전</span>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
         </div>
     </div>
 {% endblock %}

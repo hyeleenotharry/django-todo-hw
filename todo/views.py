@@ -94,12 +94,18 @@ def update_todo(request, id):
 @login_required
 def check_todo(request, id):
     checklist = request.POST.getlist('todo-check')
-    for i in checklist:
-        todo = todoModel.objects.get(id=i)
-        if todo.is_completed == 'True':
-            todo.is_completed = 'False'
+
+    if checklist:
+        print(checklist)
+        for i in checklist:
+            todo = todoModel.objects.get(id=i)
+            todo.is_completed = True
             todo.save()
-        else:
-            todo.is_completed = 'True'
+    else:
+        checklist = request.POST.getlist('todo-check2')
+        print(checklist)
+        for i in checklist:
+            todo = todoModel.objects.get(id=i)
+            todo.is_completed = False
             todo.save()
     return redirect('/todo/mytodo')

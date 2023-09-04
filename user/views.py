@@ -19,6 +19,10 @@ def sign_up_view(request):
         password = request.POST.get('password','')
         password2 = request.POST.get('password2', '')
         email = request.POST.get('email','')
+        try:
+            profile = request.FILES['images']
+        except:
+            profile = None
         if (password != password2):
             return render(request,'user/signup.html', {'error' : '입력하신 비밀번호가 서로 다릅니다!'})
         else:
@@ -26,9 +30,9 @@ def sign_up_view(request):
             if ex_user:
                 return render(request, 'user/signup.html', {'error': '존재하는 아이디 입니다!'})
             else:
-                UserModel.objects.create_user(username=username, password=password, email=email)
+                UserModel.objects.create_user(username=username, password=password, email=email, profile=profile)
 
-            return redirect('/todo')
+            return redirect('/signin')
 
 def sign_in_view(request):
     if request.method == 'GET':
@@ -45,7 +49,8 @@ def sign_in_view(request):
         else:
             me = auth.authenticate(request, username=username,password=password)
             if me is not None:
-                print('login well')
+                # request.session['username'] = username
+                # request.session.set_expiry(0)
                 auth.login(request, me)
                 return redirect('/todo')
             else:

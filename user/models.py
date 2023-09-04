@@ -8,3 +8,4 @@ class UserModel(AbstractUser):
         db_table = "my_user"
 
     email = models.CharField(max_length=256, default='')
+    profile = models.ImageField(upload_to="images/", null=True, blank=True)
