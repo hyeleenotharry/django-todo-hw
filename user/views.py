@@ -22,6 +22,7 @@ def sign_up_view(request):
         try:
             profile = request.FILES['images']
         except:
+            print("파일이 없습니다.")
             profile = None
         if (password != password2):
             return render(request,'user/signup.html', {'error' : '입력하신 비밀번호가 서로 다릅니다!'})
